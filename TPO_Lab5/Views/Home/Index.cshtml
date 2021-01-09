@@ -1,0 +1,154 @@
+﻿@model (IReadOnlyDictionary<string, TPO_Lab1.Product> products, int price)
+
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (Model.price > 0)
+{
+    <script type="text/javascript">
+        alert(`Вы купили товара на @Model.price`);
+    </script>
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <h4 class="display-3">Продуктовый магазин</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col d-flex justify-content-center">
+            <h3>Товары: <span id="count">@Model.products.Count</span></h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <form asp-controller="Home" asp-action="DeleteProduct" method="get">
+                <table id="products" class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Название</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Цена</th>
+                            <th scope="col">Продано</th>
+                            <th scope="col">Доход</th>
+                            <th scope="col">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model.Item1)
+                        {
+                            <tr>
+                                <td>@product.Key</td>
+                                <td>@product.Value.CountProduct</td>
+                                <td>@product.Value.Price</td>
+                                <td>@product.Value.HowMany</td>
+                                <td>@product.Value.HowMuch</td>
+                                <td><button id="btnSuccessDelete" name="dlName" type="submit" value="@product.Key" class="btn btn-danger">Удалить</button></td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<div class="container bg-light mt-4">
+    <div class="row m-3">
+        <div class="col-sm">
+            <h4>Операции</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm m-1">
+            <h5>Добавить новый товар</h5>
+            <form asp-controller="Home" asp-action="NewProduct" method="post" autocomplete="off">
+                <div class="form-group row">
+                    <label for="name">Имя</label>
+                    <input name="name" class="form-control" id="name" placeholder="Введите название товара">
+                </div>
+                <div class="form-group row">
+                    <label for="count">Количество</label>
+                    <input type="number" name="count" class="form-control" id="count" placeholder="Введите количество товара">
+                </div>
+                <div class="form-group row">
+                    <label for="price">Цена</label>
+                    <input type="number" name="price" class="form-control" id="price" placeholder="Введите цену">
+                </div>
+                <button id="btnNew" type="submit" class="btn btn-primary float-right">Добавить</button>
+            </form>
+        </div>
+        <div class="col-sm m-1">
+            <h5>Изменение цены товара</h5>
+            <form asp-controller="Home" asp-action="ChangeProduct" method="get" autocomplete="off">
+                <div class="form-group row">
+                    <label for="changeName">Название товара</label>
+                    <input name="changeName" class="form-control" id="changeName" placeholder="Введите название товара">
+                </div>
+                <div class="form-group row">
+                    <label for="changePrice">Новая сумма</label>
+                    <input type="number" name="changePrice" class="form-control" id="changePrice" placeholder="Введите новую сумму">
+                </div>
+                <button id="btnChange" type="submit" class="btn btn-primary float-right">Изменить</button>
+            </form>
+        </div>
+        <div class="col-sm m-1">
+            <h5>Импорт товара</h5>
+            <form asp-controller="Home" asp-action="ImportProduct" method="get" autocomplete="off">
+                <div class="form-group row">
+                    <label for="importName">Название товара</label>
+                    <input name="importName" class="form-control" id="importName" placeholder="Введите название товара">
+                </div>
+                <div class="form-group row">
+                    <label for="importCount">Количество товара</label>
+                    <input type="number" name="importCount" class="form-control" id="importCount" placeholder="Введите количество товара">
+                </div>
+                <button id="btnImport" type="submit" class="btn btn-primary float-right">Импорт</button>
+            </form>
+        </div>
+        <div class="col-sm m-1">
+            <h5>Купить товар</h5>
+            <form asp-controller="Home" asp-action="BuyProduct" method="get" autocomplete="off">
+                <div class="form-group row">
+                    <label for="buyName">Название товара</label>
+                    <input name="buyName" class="form-control" id="buyName" placeholder="Введите название товара">
+                </div>
+                <div class="form-group row">
+                    <label for="buyCount">Количество товара</label>
+                    <input type="number" name="buyCount" class="form-control" id="buyCount" placeholder="Введите количество товара">
+                </div>
+                <button id="btnBuy" type="submit" class="btn btn-primary float-right">Купить</button>
+            </form>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(ViewData["Error"].ToString()))
+    {
+        <div class="row m-3">
+            <div class="col-1 p-0">
+                <label class="form-check-label" for="invalidCheck3">
+                    Ошибка: 
+                </label>
+            </div>
+            <div class="form-group col-3 p-0">
+                <div class="form-check">
+                    <input class="form-check-input is-invalid" type="hidden" value="" id="invalidCheck3" aria-describedby="invalidCheck3Feedback" required>
+                    <label class="form-check-label" for="invalidCheck3">
+                        @ViewData["Error"].ToString()
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>
